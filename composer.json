@@ -1,0 +1,12 @@
+{
+    "name": "data-drak/project",  
+    "description": "A project for data processing",
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "DataDrak\\": "src/"
+        }
+    }
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tra cứu Mã số thuế</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .search-field { max-width: 400px; }
+    .btn-search-submit { background-color: #007bff; color: #fff; }
+    .btn-search-submit:hover { background-color: #0056b3; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-light bg-light">
+    <form class="form-inline navbar-search tax-search" method="get" action="/Search/" target="_top"
+          itemprop="potentialAction" itemscope itemtype="http://schema.org/SearchAction">
+      <meta itemprop="target" content="https://masothue.com/Search/?q={q}" />
+      <div class="input-group">
+        <input itemprop="query-input" type="text" id="search" class="form-control search-field tax-search-input"
+               name="q" placeholder="Nhập mã số thuế, CMND, tên công ty" required />
+        <div class="input-group-append">
+          <select name="type" class="custom-select">
+            <option value="auto">Tìm tự động</option>
+            <option value="enterpriseTax">Mã số thuế công ty</option>
+            <option value="personalTax">Mã số thuế cá nhân</option>
+            <option value="identity">CMND, căn cước</option>
+            <option value="enterpriseName">Tên công ty</option>
+            <option value="legalName">Giám đốc công ty</option>
+          </select>
+        </div>
+        <input type="hidden" name="token" value="" class="token-search">
+        <input type="hidden" name="force-search" value="0" class="force-search">
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-search-submit">
+            <i class="fas fa-search"></i> Tìm kiếm
+          </button>
+        </div>
+      </div>
+    </form>
+  </nav>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>

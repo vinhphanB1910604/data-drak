@@ -1,0 +1,2 @@
+# Li?t kê t?t c? d?ch v? có tên ch?a "mysql"
+sc.exe query | findstr /I "mysql"
