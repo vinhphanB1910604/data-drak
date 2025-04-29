@@ -7,9 +7,10 @@ from src.utils.database_handler import DatabaseHandler
 
 class MyTargetScraper:
     def __init__(self, max_workers=1):
-        self.base_url = "https://masothue.com/tra-cuu-ma-so-thue-theo-tinh/phuong-xuan-khanh-579"
+        self.base_url = "https://masothue.com/tra-cuu-ma-so-thue-theo-tinh/can-tho-96"
         self.db_handler = DatabaseHandler(db_path="data-grak.db")
-        self.user_agent = UserAgent()
+        self.user_agent = UserAgent(use_cache_server=False, verify_ssl=False)  # ✅ sửa chỗ này
+        self.user_agent = UserAgent(use_cache_server=False, verify_ssl=False, fallback="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/115.0.0.0 Safari/537.36")
 
     def get_random_user_agent(self):
         return self.user_agent.random
@@ -34,6 +35,9 @@ class MyTargetScraper:
             if len(cols) < 7:
                 continue
 
+            link_elem = row.find("a", href=True)
+            detail_link = link_elem["href"] if link_elem else None
+
             company = {
                 "name": cols[1].strip(),
                 "tax_id": cols[2].strip(),
@@ -41,16 +45,40 @@ class MyTargetScraper:
                 "address": cols[3].strip(),
                 "phone": cols[4].strip(),
                 "representative": cols[5].strip(),
-                "status": cols[6].strip()
+                "status": cols[6].strip(),
+                "detail_link": detail_link
             }
 
             # Loại bỏ ký tự không hợp lệ (nếu có)
             for key in company:
-                company[key] = ''.join(c for c in company[key] if c.isprintable())
+                if isinstance(company[key], str):
+                    company[key] = ''.join(c for c in company[key] if c.isprintable())
 
             company_data.append(company)
 
         return company_data
+    def parse_detail_page(self, link):
+        html = self.send_request(link)
+        if not html:
+            return {}
+
+        soup = BeautifulSoup(html, "html.parser")
+        extra_data = {}
+
+        # Lấy các trường thông tin từ trang chi tiết
+        info_rows = soup.select("div#company-info div.row")
+        for row in info_rows:
+            label_elem = row.find("label")
+            value_elem = row.find("div", class_="col-md-8")
+            if label_elem and value_elem:
+                label = label_elem.get_text(strip=True)
+                value = value_elem.get_text(strip=True)
+                extra_data[label] = value
+
+        return extra_data
+
+
+
 
 
     def save_to_db(self, companies):
@@ -79,6 +107,11 @@ class MyTargetScraper:
             if not new_batch:
                 print("– Toàn bộ DN đã cào trước đó, dừng pagination.")
                 break
+
+            for company in new_batch:
+                if company["detail_link"]:
+                    detail_data = self.parse_detail_page(company["detail_link"])
+                    company.update(detail_data)
 
             print(f"→ Page {page}: tìm được {len(batch)} DN, trong đó {len(new_batch)} DN mới.")
             all_companies.extend(new_batch)
