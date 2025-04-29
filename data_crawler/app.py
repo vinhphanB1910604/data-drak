@@ -6,12 +6,9 @@ app = Flask(__name__)
 
 # Hàm để chạy quá trình cào dữ liệu trong background
 def run_scraper(url):
-    try:
-        scraper = MyTargetScraper()
-        scraper.base_url = url  # Đặt URL cào từ frontend
-        scraper.start()
-    except Exception as e:
-        print(f"Đã có lỗi xảy ra khi cào dữ liệu: {e}")
+    scraper = MyTargetScraper()
+    scraper.base_url = url  # Đặt URL cào từ frontend
+    scraper.start()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -24,4 +21,4 @@ def index():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=8000)
