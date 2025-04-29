@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cào Dữ Liệu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Chào mừng bạn đến với website cào dữ liệu</h1>
+    <form method="POST" action="/">
+        <label for="url">Nhập link cần cào:</label>
+        <input type="text" id="url" name="url" placeholder="Nhập link tại đây" required>
+        <button type="submit">Bắt đầu cào</button>
+    </form>
+
+    {% if url %}
+    <p>Đang cào dữ liệu từ: {{ url }}</p>
+    {% endif %}
+</body>
+</html>
